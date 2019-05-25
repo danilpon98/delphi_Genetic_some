@@ -14,7 +14,7 @@ const
   dim = 2;   { Размерность пространства поиска }
   PMutation = 0.01; { Вероятность мутации }
   PCross = 0.9;   { Вероятность скрещивания }
-  NN = 4; {число прогонов}
+  NN = 10; {число прогонов}
 
 type
   Allele = boolean;  {Алель - позиция в битовой строке }
@@ -23,9 +23,8 @@ type
 
   Individual = record
     Chrom: Chromosome; { Генотип = битовая строка }
-    x: Fenotype;
-    { Фенотип = массив вещественных координат точки в пространстве поиска }
-    Fitness: double; { Значение целевой функции }
+    x: Fenotype;       { Фенотип = массив вещественных координат точки в пространстве поиска }
+    Fitness: double;   { Значение целевой функции }
   end;
   Population = array [1..maxpop] of Individual;
   TForm1 = class(TForm)
@@ -97,14 +96,22 @@ type
     Label9: TLabel;
     Edit3: TEdit;
     Edit4: TEdit;
-    Label10: TLabel;
-    Edit5: TEdit;
-    Label11: TLabel;
-    Edit6: TEdit;
     Chart2: TChart;
     Series51: TLineSeries;
+    RadioButton1: TRadioButton;
+    RadioButton2: TRadioButton;
+    Image1: TImage;
+    Image2: TImage;
+    Panel3: TPanel;
+    Label10: TLabel;
+    Edit5: TEdit;
+    Edit6: TEdit;
+    Label11: TLabel;
+    Label12: TLabel;
     procedure Button1Click(Sender: TObject);
     procedure FormActivate(Sender: TObject);
+    procedure Image1Click(Sender: TObject);
+    procedure Image2Click(Sender: TObject);
 
 
 
@@ -383,8 +390,8 @@ var i,j:integer;
     RezultMin, RezultMax :Double;
 
 begin
-  dimDynamic:=1;
   Application.ProcessMessages;
+  Button1.Enabled:=false;
   Randomize; { Инициализация генератора случайных чисел }
   NGen := StrToInt(Edit5.Text); { Количество поколений }
   PopSize := StrToInt(Edit6.Text); {Размер популяции }
@@ -436,6 +443,7 @@ begin
   RezultMax:= RezultMax / NN;
   Label1.Caption:='Минимум'+FloatToStrF(RezultMin,ffFixed,10,4);
   Label2.Caption:='Максимум'+FloatToStrF(RezultMax,ffFixed,10,4);
+  Button1.Enabled:=true;
 end;
 
 //==============================================================================
@@ -443,10 +451,26 @@ procedure TForm1.FormActivate(Sender: TObject);
 var
   i,m : integer;
 begin
-
+  dimDynamic:=2;
   M:=Chart1.CountActiveSeries; // определяем число хранилищ данных Series
   for i := 0 to M-1 do
     Chart1.Series[i].Clear;
+end;
+
+procedure TForm1.Image1Click(Sender: TObject);
+begin
+RadioButton1.Checked:=true;
+Panel2.Visible:=true;
+Panel3.Top:=79;
+dimDynamic:=2;
+end;
+
+procedure TForm1.Image2Click(Sender: TObject);
+begin
+RadioButton2.Checked:=true;
+Panel2.Visible:=false;
+Panel3.Top:=41;
+dimDynamic:=1;
 end;
 
 //=============================================================================
