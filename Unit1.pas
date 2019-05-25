@@ -108,6 +108,8 @@ type
     Edit6: TEdit;
     Label11: TLabel;
     Label12: TLabel;
+    RadioButton3: TRadioButton;
+    RadioButton4: TRadioButton;
     procedure Button1Click(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure Image1Click(Sender: TObject);
@@ -135,7 +137,8 @@ var
   { Счетчики мутаций, скрещиваний и количество поколений }
   NMutation, NCross, NGen: integer;
   { Статистические переменные }
-  Avg, Min, Max, BestMin, BestMax, result, SumFitness: double;
+  Avg, Min, Max, SumFitness: double;
+  Search:string;
 
 
 
@@ -145,7 +148,7 @@ implementation
 
 function ObjFunc( x: Fenotype): real;
 begin
-  //ObjFunc := 15.5+sqr(2.3-x[1])+sqr(4.1-x[2]);
+
   if dimDynamic = 1 then
     ObjFunc := 5-24*x[1]+17*x[1]*x[1]-(11/3)*x[1]*x[1]*x[1]+(1/4)*x[1]*x[1]*x[1]*x[1]
   else
@@ -159,7 +162,7 @@ begin
   Flip := Random <= Probability;
 end;
 
-{ Декодирование  строки в массив вещественных координат в пространстве поиска }
+{ Декодирование  строки в массив вещественных координат }
 procedure Decode(Chrom: Chromosome; var x: fenotype);
 var
   i, j, f, accum: longint;
@@ -217,7 +220,7 @@ begin
 end;
 
 { Оператор отбора (селекции) }
-procedure Select;
+procedure Select(Search:string);
 var
   ipick, i: integer;
 
@@ -238,7 +241,7 @@ var
   end;
 
   { Отбор наилучших особей для популяции для перехода в следующее поколение }
-  function Select1: integer;
+  function Select1(Search:string): integer;
   var
     i, j, m: integer;
   begin
@@ -249,10 +252,15 @@ var
     end;
     i := ipick;
     j := ipick + 1;
-    if OldPop[j].Fitness < OldPop[i].Fitness then
-      m := j
+    if Search='min' then
+    begin
+      if OldPop[j].Fitness < OldPop[i].Fitness then m := j else m := i;
+    end
     else
-      m := i;
+    begin
+      if OldPop[j].Fitness > OldPop[i].Fitness then m := j else m := i;
+    end;
+
     Inc(ipick, 2);
     Select1 := m;
   end;
@@ -260,7 +268,7 @@ var
 begin
   ipick := 1;
   for i := 1 to PopSize do
-    IntPop[i] := OldPop[Select1];
+    IntPop[i] := OldPop[Select1(Search)];
   OldPop := IntPop;
 end;
 
@@ -311,11 +319,11 @@ end;
 
 { Генерирование нового поколения при помощи отбора, скрещивания и мутации }
 { Предполагается, что популяция имеет четный размер }
-procedure Generation;
+procedure Generation(Search:string);
 var
   i: integer;
 begin
-  Select;
+  Select(Search);
   i := 1;
   repeat
   { Выполняются отбор, скрещивание и мутация пока полностью не
@@ -387,16 +395,17 @@ procedure plotting(Chart1:TChart); {построение графика функции для одной перемен
 
 procedure TForm1.Button1Click(Sender: TObject);
 var i,j:integer;
-    RezultMin, RezultMax :Double;
-
+    Result,BestResult: double;
 begin
   Application.ProcessMessages;
   Button1.Enabled:=false;
   Randomize; { Инициализация генератора случайных чисел }
   NGen := StrToInt(Edit5.Text); { Количество поколений }
   PopSize := StrToInt(Edit6.Text); {Размер популяции }
-  result := 0; { Инициализация переменной ответа }
-  
+  if RadioButton3.Checked = true then Search:='min' else Search:='max';
+
+  Result := 0; { Инициализация переменной ответа }
+
   if dimDynamic = 2 then
   begin
     Chart1.Visible:=true;
@@ -416,33 +425,43 @@ begin
     plotting(Chart2);
   end;
 
-  RezultMin:=0;
-  RezultMax:=0;
   for b := 1 to NN do { Прогоняется N раз для повышения достоверности }
   begin
       NMutation := 0;  { Инициализация счетчика мутация }
       NCross := 0; { Инициализация счетчика скрещиваний }
       InitPop; { Создание начальной популяции }
       Statistics(Max, Avg, Min, OldPop);
-      BestMin := Min;
-      BestMax := Max;
+
+      if Search='min' then begin
+        BestResult:= Min
+      end else begin
+        BestResult:= Max;
+      end;
       Gen := 1;   { Установка счетчика поколений в 0 }
       repeat { Главный итерационный цикл }
-        Generation;
+        Generation(Search);
         Statistics(Max, Avg, Min, NewPop);
-        if Min < BestMin then BestMin := Min;
-        if Max > BestMax then BestMax := Max;
+        if Search='min' then  begin
+          if Min < BestResult then BestResult := Min
+        end
+        else begin
+          if Max > BestResult then BestResult := Max;
+        end;
         OldPop := NewPop;
         {переход на новое поколение }
         Inc(Gen);
       until Gen > PopSize;
-      RezultMin := RezultMin + BestMin;
-      RezultMax := RezultMax + BestMax;
+      Result := Result + BestResult;
   end;
-  RezultMin:= RezultMin / NN;
-  RezultMax:= RezultMax / NN;
-  Label1.Caption:='Минимум'+FloatToStrF(RezultMin,ffFixed,10,4);
-  Label2.Caption:='Максимум'+FloatToStrF(RezultMax,ffFixed,10,4);
+  Result:= Result / NN;
+  if Search='min' then
+  begin
+    Label1.Caption:='Минимум: '+FloatToStrF(Result,ffFixed,10,4);
+  end
+  else
+  begin
+    Label1.Caption:='Максимум: '+FloatToStrF(Result,ffFixed,10,4);
+  end;
   Button1.Enabled:=true;
 end;
 
@@ -463,6 +482,8 @@ RadioButton1.Checked:=true;
 Panel2.Visible:=true;
 Panel3.Top:=79;
 dimDynamic:=2;
+Edit1.Text:=IntToStr(-89);
+Edit2.Text:=IntToStr(89);
 end;
 
 procedure TForm1.Image2Click(Sender: TObject);
@@ -471,6 +492,8 @@ RadioButton2.Checked:=true;
 Panel2.Visible:=false;
 Panel3.Top:=41;
 dimDynamic:=1;
+Edit1.Text:=IntToStr(0);
+Edit2.Text:=IntToStr(8);
 end;
 
 //=============================================================================

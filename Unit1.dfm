@@ -1056,7 +1056,7 @@ object Form1: TForm1
   object Button1: TButton
     Left = 0
     Top = 420
-    Width = 310
+    Width = 318
     Height = 60
     Caption = #1042#1099#1095#1080#1089#1083#1080#1090#1100
     Font.Charset = DEFAULT_CHARSET
@@ -1502,7 +1502,7 @@ object Form1: TForm1
   object GroupBox1: TGroupBox
     Left = -6
     Top = 151
-    Width = 316
+    Width = 324
     Height = 274
     TabOrder = 2
     object Label3: TLabel
@@ -1646,11 +1646,29 @@ object Form1: TForm1
         Text = '300'
       end
     end
+    object RadioButton3: TRadioButton
+      Left = 18
+      Top = 246
+      Width = 144
+      Height = 17
+      Caption = #1053#1072#1081#1090#1080' '#1084#1080#1085#1080#1084#1091#1084
+      Checked = True
+      TabOrder = 3
+      TabStop = True
+    end
+    object RadioButton4: TRadioButton
+      Left = 168
+      Top = 246
+      Width = 138
+      Height = 17
+      Caption = #1053#1072#1081#1090#1080' '#1084#1072#1082#1089#1080#1084#1091#1084
+      TabOrder = 4
+    end
   end
   object Chart2: TChart
-    Left = 313
+    Left = 316
     Top = 0
-    Width = 488
+    Width = 485
     Height = 369
     Legend.Visible = False
     Title.Text.Strings = (
