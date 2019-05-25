@@ -116,7 +116,7 @@ type
 var
   Form1: TForm1;
   X: Fenotype;
-  i,j,n : integer;
+  i,j,n, dimDynamic : integer;
   xMax: Fenotype;  {массив максимальных значений для координат точки в пространстве поиска}
   xMin: Fenotype;  {массив минимальных значений для координат точки в пространстве поиска}
   { Три непересекающихся популяции - старая, новая и промежуточная }
@@ -137,7 +137,10 @@ implementation
 function ObjFunc( x: Fenotype): real;
 begin
   //ObjFunc := 15.5+sqr(2.3-x[1])+sqr(4.1-x[2]);
-  ObjFunc := x[1]*x[1]+x[2]*x[2];
+  if dimDynamic = 1 then
+    ObjFunc := 5-24*x[1]+17*x[1]*x[1]-(11/3)*x[1]*x[1]*x[1]+(1/4)*x[1]*x[1]*x[1]*x[1]
+  else
+    ObjFunc := x[1]*x[1]+x[2]*x[2];
 end;
 
 
@@ -152,7 +155,7 @@ procedure Decode(Chrom: Chromosome; var x: fenotype);
 var
   i, j, f, accum: longint;
 begin
-  for i := 1 to Dim do
+  for i := 1 to dimDynamic do
   begin
     Accum := 0;
     f := 1;
@@ -196,7 +199,7 @@ begin
   for i := 1 to PopSize do
     with OldPop[i] do
     begin
-      for j := 1 to LenChrome * Dim do
+      for j := 1 to LenChrome * dimDynamic do
         Chrom[j] := Flip(0.5); { Бросок монеты }
       Decode(Chrom, x); { Декодирование строки }
       { Вычисление начальных значений функции пригодности }
@@ -311,7 +314,7 @@ begin
     { Скрещивание и мутация - мутация вставлена в процедуру скрещивания }
     Crossover(OldPop[i].Chrom, OldPop[i + 1].Chrom,
       NewPop[i].Chrom, NewPop[i + 1].Chrom,
-      LenChrome * Dim, NCross, NMutation);
+      LenChrome * dimDynamic, NCross, NMutation);
     { Декодирование строки и вычисление пригодности }
     with NewPop[i] do
     begin
@@ -353,24 +356,33 @@ begin
       X[2]:=X[2]+abs(xMin[2]-xMax[2])/(M-1);       // и X[2]
   end;                                         // while X[2]<=xMax[2]
 end;
+
 //==============================================================================
 procedure TForm1.Button1Click(Sender: TObject);
 var i,j:integer;
     RezultMin, RezultMax :Double;
 
 begin
-
+  dimDynamic:=1;
   Randomize; { Инициализация генератора случайных чисел }
   NGen := StrToInt(Edit5.Text); { Количество поколений }
   PopSize := StrToInt(Edit6.Text); {Размер популяции }
   result := 0; { Инициализация переменной ответа }
-
-
-  xMax[1]:= StrToFloat(Edit2.Text);
-  xMax[2]:= StrToFloat(Edit4.Text);
-  xMin[1]:= StrToFloat(Edit1.Text);
-  xMin[2]:= StrToFloat(Edit3.Text);
-  Pict(Chart1);
+  
+  if dimDynamic = 2 then
+  begin
+    xMax[1]:= StrToFloat(Edit2.Text);
+    xMax[2]:= StrToFloat(Edit4.Text);
+    xMin[1]:= StrToFloat(Edit1.Text);
+    xMin[2]:= StrToFloat(Edit3.Text);
+    Pict(Chart1);  
+  end
+  else
+  begin
+    xMin[1]:= StrToFloat(Edit1.Text);
+    xMax[1]:= StrToFloat(Edit2.Text);
+  end;
+  
 
   NMutation := 0;  { Инициализация счетчика мутация }
   NCross := 0; { Инициализация счетчика скрещиваний }
