@@ -1,11 +1,10 @@
 object Form1: TForm1
   Left = 0
   Top = 0
-  Caption = 
-    #1050#1091#1088#1089#1086#1074#1072#1103' '#1088#1072#1073#1086#1090#1072' '#1089#1090'-'#1086#1074' '#1075#1088#1091#1087#1087#1099' '#1055#1048#1073'-182 '#1040#1073#1088#1072#1096#1082#1080#1085#1072' '#1044#1084#1080#1090#1088#1080#1103' '#1040#1085#1072#1090#1086#1083#1100#1077#1074 +
-    #1080#1095#1072' '#1080' '#1041#1072#1073#1072#1088#1099#1082#1080#1085#1072' '#1042#1083#1072#1076#1080#1089#1083#1072#1074#1072' '#1054#1083#1077#1075#1086#1074#1080#1095#1072
-  ClientHeight = 446
-  ClientWidth = 710
+  BorderStyle = bsSingle
+  Caption = #1043#1077#1085#1077#1090#1080#1095#1077#1089#1082#1080#1081' '#1072#1083#1075#1086#1088#1080#1090#1084' '
+  ClientHeight = 456
+  ClientWidth = 801
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,37 +16,37 @@ object Form1: TForm1
   PixelsPerInch = 96
   TextHeight = 19
   object Label1: TLabel
-    Left = 192
-    Top = 32
+    Left = 392
+    Top = 400
     Width = 46
     Height = 19
     Caption = 'Label1'
   end
   object Label2: TLabel
-    Left = 472
-    Top = 32
+    Left = 24
+    Top = 400
     Width = 46
     Height = 19
     Caption = 'Label2'
   end
   object Button1: TButton
-    Left = 8
-    Top = 8
-    Width = 153
-    Height = 65
-    Caption = #1056#1045#1064#1040#1058#1068
+    Left = 0
+    Top = 0
+    Width = 145
+    Height = 49
+    Caption = #1042#1099#1095#1080#1089#1083#1080#1090#1100
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = -21
+    Font.Height = -19
     Font.Name = 'Tahoma'
-    Font.Style = [fsBold, fsItalic]
+    Font.Style = []
     ParentFont = False
     TabOrder = 0
     OnClick = Button1Click
   end
   object Chart1: TChart
-    Left = 0
-    Top = 80
+    Left = 313
+    Top = 0
     Width = 481
     Height = 369
     Cursor = crArrow
@@ -474,6 +473,146 @@ object Form1: TForm1
       XValues.Order = loAscending
       YValues.Name = 'Y'
       YValues.Order = loNone
+    end
+  end
+  object GroupBox1: TGroupBox
+    Left = 0
+    Top = 80
+    Width = 313
+    Height = 193
+    TabOrder = 2
+    object Label3: TLabel
+      Left = 11
+      Top = 16
+      Width = 76
+      Height = 19
+      Caption = #1048#1085#1090#1077#1088#1074#1072#1083':'
+    end
+    object Label10: TLabel
+      Left = 11
+      Top = 96
+      Width = 176
+      Height = 19
+      Caption = #1050#1086#1083#1080#1095#1077#1089#1090#1074#1086' '#1087#1086#1082#1086#1083#1077#1085#1080#1081':'
+    end
+    object Label11: TLabel
+      Left = 46
+      Top = 128
+      Width = 141
+      Height = 19
+      Caption = #1056#1072#1079#1084#1077#1088' '#1087#1086#1087#1091#1083#1103#1094#1080#1080':'
+    end
+    object Panel1: TPanel
+      Left = 85
+      Top = 3
+      Width = 174
+      Height = 38
+      BevelOuter = bvNone
+      ParentShowHint = False
+      ShowCaption = False
+      ShowHint = False
+      TabOrder = 0
+      object Label4: TLabel
+        Left = 8
+        Top = 8
+        Width = 6
+        Height = 19
+        Caption = '['
+      end
+      object Label5: TLabel
+        Left = 83
+        Top = 8
+        Width = 6
+        Height = 19
+        Caption = ';'
+      end
+      object Label6: TLabel
+        Left = 158
+        Top = 8
+        Width = 6
+        Height = 19
+        Caption = ']'
+      end
+      object Edit1: TEdit
+        Left = 20
+        Top = 5
+        Width = 57
+        Height = 27
+        TabOrder = 0
+        Text = '-89'
+      end
+      object Edit2: TEdit
+        Left = 95
+        Top = 5
+        Width = 57
+        Height = 27
+        TabOrder = 1
+        Text = '89'
+      end
+    end
+    object Panel2: TPanel
+      Left = 85
+      Top = 41
+      Width = 174
+      Height = 41
+      BevelOuter = bvNone
+      ParentShowHint = False
+      ShowCaption = False
+      ShowHint = False
+      TabOrder = 1
+      object Label7: TLabel
+        Left = 8
+        Top = 8
+        Width = 6
+        Height = 19
+        Caption = '['
+      end
+      object Label8: TLabel
+        Left = 83
+        Top = 8
+        Width = 6
+        Height = 19
+        Caption = ';'
+      end
+      object Label9: TLabel
+        Left = 158
+        Top = 8
+        Width = 6
+        Height = 19
+        Caption = ']'
+      end
+      object Edit3: TEdit
+        Left = 20
+        Top = 6
+        Width = 57
+        Height = 27
+        TabOrder = 0
+        Text = '-72'
+      end
+      object Edit4: TEdit
+        Left = 95
+        Top = 5
+        Width = 57
+        Height = 27
+        TabOrder = 1
+        Text = '72'
+      end
+    end
+    object Edit5: TEdit
+      Left = 193
+      Top = 88
+      Width = 66
+      Height = 27
+      TabOrder = 2
+      Text = '80'
+    end
+    object Edit6: TEdit
+      Left = 193
+      Top = 121
+      Width = 66
+      Height = 27
+      TabOrder = 3
+      Text = '190'
     end
   end
 end

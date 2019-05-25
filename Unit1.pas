@@ -12,10 +12,8 @@ const
   MaxPop = 1000; { ћаксимальное число поколений }
   LenChrome = 20; { „исло битов на один кодируемый параметр }
   dim = 2;   { –азмерность пространства поиска }
-  P1 = 90;   {  оличество поколений }
-  S1 = 190;   { –азмер попул€ции }
-  PMutation = 0.01; { ¬еро€тность скрещивани€ }
-  PCross = 0.9; { ¬еро€тность мутации }
+  PMutation = 0.01; { ¬еро€тность мутации }
+  PCross = 0.9;   { ¬еро€тность скрещивани€ }
   NN = 30; {число прогонов}
 
 type
@@ -85,6 +83,24 @@ type
     Series50: TFastLineSeries;
     Label1: TLabel;
     Label2: TLabel;
+    GroupBox1: TGroupBox;
+    Label3: TLabel;
+    Edit1: TEdit;
+    Edit2: TEdit;
+    Panel1: TPanel;
+    Label4: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
+    Panel2: TPanel;
+    Label7: TLabel;
+    Label8: TLabel;
+    Label9: TLabel;
+    Edit3: TEdit;
+    Edit4: TEdit;
+    Label10: TLabel;
+    Edit5: TEdit;
+    Label11: TLabel;
+    Edit6: TEdit;
     procedure Button1Click(Sender: TObject);
     procedure FormActivate(Sender: TObject);
 
@@ -96,19 +112,13 @@ type
     { Public declarations }
   end;
 
-const
-  {массив максимальных значений дл€ координат точки в пространстве поиска}
-  xMax: Fenotype = (89,75);
-  {массив минимальных значений дл€ координат точки в пространстве поиска}
-  xMin: Fenotype = (-89,-75);
 
 var
   Form1: TForm1;
-  X,
-  Xn,
-  Xk    : Fenotype;
+  X: Fenotype;
   i,j,n : integer;
-
+  xMax: Fenotype;  {массив максимальных значений дл€ координат точки в пространстве поиска}
+  xMin: Fenotype;  {массив минимальных значений дл€ координат точки в пространстве поиска}
   { “ри непересекающихс€ попул€ции - стара€, нова€ и промежуточна€ }
   OldPop, NewPop, IntPop: Population;
   { √лобальные целые переменные}
@@ -328,31 +338,39 @@ begin
   M:=Chart1.CountActiveSeries;         // ”знаем, сколько у нас хранилищ данных
   for i := 0 to M-1 do Chart1.Series[i].Clear;   // и очищаем их
 
-  X[2]:=Xn[2];
+  X[2]:=xMin[2];
   j:=0;
-  while X[2]<=Xk[2] do
+  while X[2]<=xMax[2] do
   begin
-      X[1]:=Xn[1];
-      while X[1]<=Xk[1] do              {при фиксированном X[2]
+      X[1]:=xMin[1];
+      while X[1]<=xMax[1] do              {при фиксированном X[2]
                                                 заполн€ем Series[j]}
       begin
         Chart1.Series[j].AddXY(X[1],ObjFunc(x));     // значени€ми X[1] и ObjFunc(x)
-        X[1]:=X[1]+abs(Xn[1]-Xk[1])/200;
-      end;                                     // while X[1]<=Xk[1]
+        X[1]:=X[1]+abs(xMin[1]-xMax[1])/200;
+      end;                                     // while X[1]<=xMax[1]
       j:=j+1;                                  // переход к очередному Series[j]
-      X[2]:=X[2]+abs(Xn[2]-Xk[2])/(M-1);       // и X[2]
-  end;                                         // while X[2]<=Xk[2]
+      X[2]:=X[2]+abs(xMin[2]-xMax[2])/(M-1);       // и X[2]
+  end;                                         // while X[2]<=xMax[2]
 end;
 //==============================================================================
 procedure TForm1.Button1Click(Sender: TObject);
-var RezultMin, RezultMax :Double;
+var i,j:integer;
+    RezultMin, RezultMax :Double;
+
 begin
-  Pict(Chart1);
+
   Randomize; { »нициализаци€ генератора случайных чисел }
-  NGen := P1;
-  PopSize := S1;
+  NGen := StrToInt(Edit5.Text); {  оличество поколений }
+  PopSize := StrToInt(Edit6.Text); {–азмер попул€ции }
   result := 0; { »нициализаци€ переменной ответа }
 
+
+  xMax[1]:= StrToFloat(Edit2.Text);
+  xMax[2]:= StrToFloat(Edit4.Text);
+  xMin[1]:= StrToFloat(Edit1.Text);
+  xMin[2]:= StrToFloat(Edit3.Text);
+  Pict(Chart1);
 
   NMutation := 0;  { »нициализаци€ счетчика мутаци€ }
   NCross := 0; { »нициализаци€ счетчика скрещиваний }
@@ -380,9 +398,6 @@ begin
   RezultMax:= RezultMax / NN;
   Label1.Caption:='ћинимум'+FloatToStrF(RezultMin,ffFixed,10,4);
   Label2.Caption:='ћаксимум'+FloatToStrF(RezultMax,ffFixed,10,4);
-  //writeln('ћинимум вещественной функции = ', BestMin: 12: 6);
-  //writeln('ћаксимум вещественной функции = ', BestMax: 12: 6);
-  //write('ƒл€ завершени€ программы нажмите любую клавишу');
 end;
 
 //==============================================================================
@@ -390,14 +405,6 @@ procedure TForm1.FormActivate(Sender: TObject);
 var
   i,m : integer;
 begin
-  N:=2;
-
-  for I := 1 to N do
-  begin
-    Xn[i]:=-Random(100*i); // начальные значени€
-    Xk[i]:= abs(Xn[i]); // конечные значени€
-  end;
-
 
   M:=Chart1.CountActiveSeries; // определ€ем число хранилищ данных Series
   for i := 0 to M-1 do
