@@ -22,13 +22,6 @@ object Form1: TForm1
     Height = 19
     Caption = 'Label1'
   end
-  object Label2: TLabel
-    Left = 324
-    Top = 440
-    Width = 46
-    Height = 19
-    Caption = 'Label2'
-  end
   object Image1: TImage
     Left = 34
     Top = 45

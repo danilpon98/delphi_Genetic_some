@@ -14,7 +14,6 @@ const
   dim = 2;   { Размерность пространства поиска }
   PMutation = 0.01; { Вероятность мутации }
   PCross = 0.9;   { Вероятность скрещивания }
-  NN = 10; {число прогонов}
 
 type
   Allele = boolean;  {Алель - позиция в битовой строке }
@@ -81,7 +80,6 @@ type
     Series49: TFastLineSeries;
     Series50: TFastLineSeries;
     Label1: TLabel;
-    Label2: TLabel;
     GroupBox1: TGroupBox;
     Label3: TLabel;
     Edit1: TEdit;
@@ -425,42 +423,39 @@ begin
     plotting(Chart2);
   end;
 
-  for b := 1 to NN do { Прогоняется N раз для повышения достоверности }
-  begin
-      NMutation := 0;  { Инициализация счетчика мутация }
-      NCross := 0; { Инициализация счетчика скрещиваний }
-      InitPop; { Создание начальной популяции }
-      Statistics(Max, Avg, Min, OldPop);
 
-      if Search='min' then begin
-        BestResult:= Min
-      end else begin
-        BestResult:= Max;
-      end;
-      Gen := 1;   { Установка счетчика поколений в 0 }
-      repeat { Главный итерационный цикл }
-        Generation(Search);
-        Statistics(Max, Avg, Min, NewPop);
-        if Search='min' then  begin
-          if Min < BestResult then BestResult := Min
-        end
-        else begin
-          if Max > BestResult then BestResult := Max;
-        end;
-        OldPop := NewPop;
-        {переход на новое поколение }
-        Inc(Gen);
-      until Gen > PopSize;
-      Result := Result + BestResult;
+  NMutation := 0;  { Инициализация счетчика мутация }
+  NCross := 0; { Инициализация счетчика скрещиваний }
+  InitPop; { Создание начальной популяции }
+  Statistics(Max, Avg, Min, OldPop);
+
+  if Search='min' then begin
+    BestResult:= Min
+  end else begin
+    BestResult:= Max;
   end;
-  Result:= Result / NN;
+  Gen := 1;   { Установка счетчика поколений в 0 }
+  repeat { Главный итерационный цикл }
+    Generation(Search);
+    Statistics(Max, Avg, Min, NewPop);
+    if Search='min' then  begin
+      if Min < BestResult then BestResult := Min
+    end
+    else begin
+      if Max > BestResult then BestResult := Max;
+    end;
+    OldPop := NewPop;
+    {переход на новое поколение }
+    Inc(Gen);
+  until Gen > PopSize;
+
   if Search='min' then
   begin
-    Label1.Caption:='Минимум: '+FloatToStrF(Result,ffFixed,10,4);
+    Label1.Caption:='Минимум: '+FloatToStrF(BestResult,ffFixed,10,4);
   end
   else
   begin
-    Label1.Caption:='Максимум: '+FloatToStrF(Result,ffFixed,10,4);
+    Label1.Caption:='Максимум: '+FloatToStrF(BestResult,ffFixed,10,4);
   end;
   Button1.Enabled:=true;
 end;
