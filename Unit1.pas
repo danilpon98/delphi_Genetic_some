@@ -108,6 +108,7 @@ type
     Label12: TLabel;
     RadioButton3: TRadioButton;
     RadioButton4: TRadioButton;
+    Series52: TPointSeries;
     procedure Button1Click(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure Image1Click(Sender: TObject);
@@ -135,7 +136,7 @@ var
   { Счетчики мутаций, скрещиваний и количество поколений }
   NMutation, NCross, NGen: integer;
   { Статистические переменные }
-  Avg, Min, Max, SumFitness: double;
+  Avg, Min, Max, SumFitness, xMinS, xMaxS: double;
   Search:string;
 
 
@@ -188,15 +189,21 @@ begin
   SumFitness := Pop[1].Fitness;
   Min := Pop[1].Fitness;
   Max := Pop[1].Fitness;
+  xMinS:= pop[1].x[1];
+  xMaxS:= pop[1].x[1];
   for j := 2 to PopSize do
     with Pop[j] do
     begin
       { Накопление суммы значений функции пригодности }
       SumFitness := SumFitness + Fitness;
-      if Fitness > Max then
+      if Fitness > Max then begin
         Max := Fitness; { Новое значение Max }
-      if Fitness < Min then
+        xMaxS := x[1];
+      end;
+      if Fitness < Min then begin
         Min := Fitness; { Новое значение Min }
+        xMinS := x[1];
+      end;
     end;
   Avg := SumFitness / PopSize;   { Расчет среднего }
 end;
@@ -375,7 +382,7 @@ end;
 //==============================================================================
 
 
-procedure plotting(Chart1:TChart); {построение графика функции для одной переменной}
+  procedure plotting(Chart1:TChart); {построение графика функции для одной переменной}
   var i:fenotype;
     h:Real;
   begin
@@ -388,10 +395,46 @@ procedure plotting(Chart1:TChart); {построение графика функции для одной перемен
     end;
     Chart1.Update;
   end;
+
 //==============================================================================
 
 
 procedure TForm1.Button1Click(Sender: TObject);
+
+
+  procedure plottingDots(popsize:integer; var pop:population);  {вывод на график каждого индивидуума }
+  var j:integer;
+  begin
+    Chart2.Series[1].Clear;
+    for j := 1 to popsize do with pop[j] do begin
+      if Search='min' then
+      begin
+        if Min=fitness then
+        begin
+          Chart2.Series[1].AddXY(xMinS,min,'',clBlue);
+        end
+        else
+        begin
+          Chart2.Series[1].AddXY(x[1],fitness);
+        end;
+      end
+      else
+      begin
+        if Max=fitness then
+        begin
+          Chart2.Series[1].AddXY(xMaxS,Max,'',clBlue);
+        end
+        else
+        begin
+          Chart2.Series[1].AddXY(x[1],fitness);
+        end;
+      end;
+    end;
+    Chart2.Update;
+    Sleep(300);
+  end;
+
+
 var i,j:integer;
     Result,BestResult: double;
 begin
@@ -428,6 +471,7 @@ begin
   NCross := 0; { Инициализация счетчика скрещиваний }
   InitPop; { Создание начальной популяции }
   Statistics(Max, Avg, Min, OldPop);
+  if dimDynamic=1 then plottingDots(PopSize,OldPop);   {вывод на график каждого индивидуума популяции}
 
   if Search='min' then begin
     BestResult:= Min
@@ -445,6 +489,7 @@ begin
       if Max > BestResult then BestResult := Max;
     end;
     OldPop := NewPop;
+    if dimDynamic=1 then plottingDots(PopSize,OldPop);   {вывод на график каждого индивидуума популяции}
     {переход на новое поколение }
     Inc(Gen);
   until Gen > PopSize;

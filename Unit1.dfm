@@ -1628,7 +1628,7 @@ object Form1: TForm1
         Width = 66
         Height = 27
         TabOrder = 0
-        Text = '80'
+        Text = '20'
       end
       object Edit6: TEdit
         Left = 186
@@ -1636,7 +1636,7 @@ object Form1: TForm1
         Width = 66
         Height = 27
         TabOrder = 1
-        Text = '300'
+        Text = '40'
       end
     end
     object RadioButton3: TRadioButton
@@ -1675,6 +1675,15 @@ object Form1: TForm1
       Brush.BackColor = clDefault
       Pointer.InflateMargins = True
       Pointer.Style = psRectangle
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Series52: TPointSeries
+      ClickableLine = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psCircle
       XValues.Name = 'X'
       XValues.Order = loAscending
       YValues.Name = 'Y'
