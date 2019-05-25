@@ -17,10 +17,9 @@ object Form1: TForm1
   TextHeight = 19
   object Label1: TLabel
     Left = 324
-    Top = 392
-    Width = 46
+    Top = 431
+    Width = 5
     Height = 19
-    Caption = 'Label1'
   end
   object Image1: TImage
     Left = 34
@@ -1046,6 +1045,13 @@ object Form1: TForm1
     Height = 19
     Caption = #1042#1099#1073#1077#1088#1080#1090#1077' '#1092#1091#1085#1082#1094#1080#1102':'
   end
+  object Label16: TLabel
+    Left = 324
+    Top = 395
+    Width = 79
+    Height = 19
+    Caption = #1056#1077#1079#1091#1083#1100#1090#1072#1090':'
+  end
   object Button1: TButton
     Left = 0
     Top = 420
@@ -1541,16 +1547,22 @@ object Form1: TForm1
         Top = 5
         Width = 57
         Height = 27
+        Hint = #1048#1085#1090#1077#1088#1074#1072#1083
+        ParentShowHint = False
+        ShowHint = False
         TabOrder = 0
         Text = '-89'
+        OnKeyPress = Edit1KeyPress
       end
       object Edit2: TEdit
         Left = 95
         Top = 5
         Width = 57
         Height = 27
+        Hint = #1048#1085#1090#1077#1088#1074#1072#1083
         TabOrder = 1
         Text = '89'
+        OnKeyPress = Edit1KeyPress
       end
     end
     object Panel2: TPanel
@@ -1589,54 +1601,110 @@ object Form1: TForm1
         Top = 5
         Width = 57
         Height = 27
+        Hint = #1048#1085#1090#1077#1088#1074#1072#1083
         TabOrder = 0
         Text = '72'
+        OnKeyPress = Edit1KeyPress
       end
       object Edit3: TEdit
         Left = 20
         Top = 6
         Width = 57
         Height = 27
+        Hint = #1048#1085#1090#1077#1088#1074#1072#1083
         TabOrder = 1
         Text = '-72'
+        OnKeyPress = Edit1KeyPress
       end
     end
     object Panel3: TPanel
       Left = 6
       Top = 79
       Width = 283
-      Height = 98
+      Height = 154
       BevelOuter = bvNone
       TabOrder = 2
       object Label10: TLabel
-        Left = 4
+        Left = 28
         Top = 17
         Width = 176
         Height = 19
         Caption = #1050#1086#1083#1080#1095#1077#1089#1090#1074#1086' '#1087#1086#1082#1086#1083#1077#1085#1080#1081':'
       end
       object Label11: TLabel
-        Left = 39
+        Left = 63
         Top = 49
         Width = 141
         Height = 19
         Caption = #1056#1072#1079#1084#1077#1088' '#1087#1086#1087#1091#1083#1103#1094#1080#1080':'
       end
+      object Label2: TLabel
+        Left = 40
+        Top = 83
+        Width = 164
+        Height = 19
+        Caption = #1042#1077#1088#1086#1103#1090#1085#1086#1089#1090#1100' '#1084#1091#1090#1072#1094#1080#1080':'
+      end
+      object Label13: TLabel
+        Left = 257
+        Top = 83
+        Width = 16
+        Height = 19
+        Caption = '%'
+      end
+      object Label14: TLabel
+        Left = 257
+        Top = 117
+        Width = 16
+        Height = 19
+        Caption = '%'
+      end
+      object Label15: TLabel
+        Left = 4
+        Top = 115
+        Width = 199
+        Height = 19
+        Caption = #1042#1077#1088#1086#1103#1090#1085#1086#1089#1090#1100' '#1089#1082#1088#1077#1097#1080#1074#1072#1085#1080#1103':'
+      end
       object Edit5: TEdit
-        Left = 186
+        Left = 210
         Top = 9
         Width = 66
         Height = 27
+        Hint = #1050#1086#1083#1080#1095#1077#1089#1090#1074#1086' '#1087#1086#1082#1086#1083#1077#1085#1080#1081
         TabOrder = 0
-        Text = '20'
+        Text = '60'
+        OnKeyPress = Edit5KeyPress
       end
       object Edit6: TEdit
-        Left = 186
+        Left = 210
         Top = 42
         Width = 66
         Height = 27
+        Hint = #1056#1072#1079#1084#1077#1088' '#1087#1086#1087#1091#1083#1103#1094#1080#1080
         TabOrder = 1
         Text = '40'
+        OnKeyPress = Edit5KeyPress
+      end
+      object Edit7: TEdit
+        Left = 210
+        Top = 74
+        Width = 45
+        Height = 27
+        Hint = #1042#1077#1088#1086#1103#1090#1085#1086#1089#1090#1100' '#1084#1091#1090#1072#1094#1080#1080
+        TabOrder = 2
+        Text = '1'
+        OnKeyPress = Edit5KeyPress
+      end
+      object Edit8: TEdit
+        Left = 210
+        Top = 108
+        Width = 45
+        Height = 27
+        Hint = #1042#1077#1088#1086#1103#1090#1085#1086#1089#1090#1100' '#1089#1082#1088#1077#1097#1080#1074#1072#1085#1080#1103
+        TabOrder = 3
+        Text = '90'
+        OnKeyPress = Edit5KeyPress
       end
     end
     object RadioButton3: TRadioButton

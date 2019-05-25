@@ -6,14 +6,12 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, VclTee.TeeGDIPlus,
   VCLTee.TeEngine, VCLTee.Series, Vcl.Grids, Vcl.ExtCtrls, VCLTee.TeeProcs,
-  VCLTee.Chart, Vcl.Imaging.jpeg;
+  VCLTee.Chart, Vcl.Imaging.jpeg, StrUtils;
 
 const
   MaxPop = 1000; { Максимальное число поколений }
   LenChrome = 20; { Число битов на один кодируемый параметр }
   dim = 2;   { Размерность пространства поиска }
-  PMutation = 0.01; { Вероятность мутации }
-  PCross = 0.9;   { Вероятность скрещивания }
 
 type
   Allele = boolean;  {Алель - позиция в битовой строке }
@@ -109,12 +107,19 @@ type
     RadioButton3: TRadioButton;
     RadioButton4: TRadioButton;
     Series52: TPointSeries;
+    Label2: TLabel;
+    Edit7: TEdit;
+    Label13: TLabel;
+    Edit8: TEdit;
+    Label14: TLabel;
+    Label15: TLabel;
+    Label16: TLabel;
     procedure Button1Click(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure Image1Click(Sender: TObject);
     procedure Image2Click(Sender: TObject);
-
-
+    procedure Edit1KeyPress(Sender: TObject; var Key: Char);
+    procedure Edit5KeyPress(Sender: TObject; var Key: Char);
 
   private
     { Private declarations }
@@ -136,16 +141,14 @@ var
   { Счетчики мутаций, скрещиваний и количество поколений }
   NMutation, NCross, NGen: integer;
   { Статистические переменные }
-  Avg, Min, Max, SumFitness, xMinS, xMaxS: double;
+  Avg, Min, Max, SumFitness, xMinS, xMaxS, PMutation, PCross: double;
   Search:string;
-
-
 
 implementation
 
 {$R *.dfm}
 
-function ObjFunc( x: Fenotype): real;
+function ObjFunc( x: Fenotype): real;   { Функция }
 begin
 
   if dimDynamic = 1 then
@@ -186,11 +189,13 @@ var
   j: integer;
   SumFitness: double;
 begin
+  {Инициализация }
   SumFitness := Pop[1].Fitness;
   Min := Pop[1].Fitness;
   Max := Pop[1].Fitness;
   xMinS:= pop[1].x[1];
   xMaxS:= pop[1].x[1];
+  {Цикл для max, min, sumfitness }
   for j := 2 to PopSize do
     with Pop[j] do
     begin
@@ -216,15 +221,15 @@ begin
   for i := 1 to PopSize do
     with OldPop[i] do
     begin
-      for j := 1 to LenChrome * dimDynamic do
-        Chrom[j] := Flip(0.5); { Бросок монеты }
+      for j := 1 to LenChrome * dimDynamic do Chrom[j] := Flip(0.5); { Бросок монеты }
       Decode(Chrom, x); { Декодирование строки }
-      { Вычисление начальных значений функции пригодности }
-      Fitness := ObjFunc(x);
+      Fitness := ObjFunc(x);{ Вычисление начальных значений функции пригодности }
     end;
 end;
 
-{ Оператор отбора (селекции) }
+
+{3 генетических оператора: отбора (select), скрещивания (crossover) и мутации (mutation)}
+{процедура турнирного отбора}
 procedure Select(Search:string);
 var
   ipick, i: integer;
@@ -278,19 +283,27 @@ begin
 end;
 
 { Оператор инверсионной мутации }
+{мутация одного бита в строке (аллеля) с вероятностью pmutation}
+{ alleleval – ген для мутации}
 function Mutation(alleleval: Allele; var NMutation: integer): Allele;
 begin
-  Mutation := alleleval;
   if Flip(PMutation) then { Мутация с вероятностью PMutation }
   begin
     Inc(NMutation);   { Наращиваем счетчик мутаций }
     Mutation := not alleleval; { Совершаем мутацию }
+  end else begin
+    Mutation := alleleval;  { Не делаем мутацию }
   end;
 end;
 
 { Оператор одноточечного скрещивания }
-procedure Crossover(var Parent1, Parent2, Child1, Child2: Chromosome; flchrom: integer;
-var NCross, NMutation: integer);
+{ Процедцра скрещивания 2 родительских строк, результат помещается в 2 строках-потомках}
+procedure Crossover(var Parent1, Parent2, Child1, Child2: Chromosome; flchrom: integer; var NCross, NMutation: integer);
+{parent1, parent2 – хромосомы родителей}
+{child1,child2 – хромосомы потомков}
+{flchrom – длина хромосомы (количество генов)}
+{ncross, nmutation – счетчики количества скрещиваний и мутаций}
+{jcross – точка сечения.}
 var
   i, jcross: integer;
 begin
@@ -323,7 +336,6 @@ begin
 end;
 
 { Генерирование нового поколения при помощи отбора, скрещивания и мутации }
-{ Предполагается, что популяция имеет четный размер }
 procedure Generation(Search:string);
 var
   i: integer;
@@ -331,12 +343,10 @@ begin
   Select(Search);
   i := 1;
   repeat
-  { Выполняются отбор, скрещивание и мутация пока полностью не
-  сформируется новая популяция newpop }
+    { Выполняются отбор, скрещивание и мутация пока полностью не
+    сформируется новая популяция newpop }
     { Скрещивание и мутация - мутация вставлена в процедуру скрещивания }
-    Crossover(OldPop[i].Chrom, OldPop[i + 1].Chrom,
-      NewPop[i].Chrom, NewPop[i + 1].Chrom,
-      LenChrome * dimDynamic, NCross, NMutation);
+    Crossover(OldPop[i].Chrom, OldPop[i + 1].Chrom, NewPop[i].Chrom, NewPop[i + 1].Chrom, LenChrome * dimDynamic, NCross, NMutation);
     { Декодирование строки и вычисление пригодности }
     with NewPop[i] do
     begin
@@ -369,13 +379,13 @@ begin
   begin
       X[1]:=xMin[1];
       while X[1]<=xMax[1] do              {при фиксированном X[2]
-                                                заполняем Series[j]}
+                                           заполняем Series[j]}
       begin
-        Chart1.Series[j].AddXY(X[1],ObjFunc(x));     // значениями X[1] и ObjFunc(x)
+        Chart1.Series[j].AddXY(X[1],ObjFunc(x));// значениями X[1] и ObjFunc(x)
         X[1]:=X[1]+abs(xMin[1]-xMax[1])/200;
       end;                                     // while X[1]<=xMax[1]
       j:=j+1;                                  // переход к очередному Series[j]
-      X[2]:=X[2]+abs(xMin[2]-xMax[2])/(M-1);       // и X[2]
+      X[2]:=X[2]+abs(xMin[2]-xMax[2])/(M-1);   // и X[2]
   end;                                         // while X[2]<=xMax[2]
 end;
 
@@ -438,11 +448,50 @@ procedure TForm1.Button1Click(Sender: TObject);
 var i,j:integer;
     Result,BestResult: double;
 begin
-  Application.ProcessMessages;
-  Button1.Enabled:=false;
+
+  // валидация всех полей на пустоту
+  for i:=0 to form1.ComponentCount-1 do
+  begin
+    if form1.Components[i].ClassNameIs('TEdit') then
+    begin
+      if tedit(form1.Components[i]).Text='' then
+      begin
+        MessageDlg('Поле "' + tedit(form1.Components[i]).Hint + '" не должно быть пустым!',mtWarning,[mbOK],0);
+        exit;
+      end;
+    end;
+  end;
+
   Randomize; { Инициализация генератора случайных чисел }
-  NGen := StrToInt(Edit5.Text); { Количество поколений }
-  PopSize := StrToInt(Edit6.Text); {Размер популяции }
+
+  NGen := StrToInt(Edit6.Text); {Размер популяции }
+  PopSize := StrToInt(Edit5.Text);{ Количество поколений } 
+  PMutation := StrToFloat(Edit7.Text)/100; { Вероятность мутации }
+  PCross := StrToFloat(Edit8.Text)/100;;   { Вероятность скрещивания }
+
+  if (PopSize <= 0) or (PopSize >= 1000) then
+  begin
+    MessageDlg('Количество поколений должно больше 0 и меньше 1000',mtWarning,[mbOK],0);
+    exit;
+  end;
+  if NGen<=0 then
+  begin
+    MessageDlg('Размер популяции должен больше 0',mtWarning,[mbOK],0);
+    exit;
+  end;
+
+  if (PMutation < 0) or (PMutation > 100) then
+  begin
+    MessageDlg('Вероятность мутации должно больше 0 и меньше 100',mtWarning,[mbOK],0);
+    exit;
+  end;
+  
+  if (PCross < 0) or (PCross > 100) then
+  begin
+    MessageDlg('Вероятность скрещивания должно больше 0 и меньше 100',mtWarning,[mbOK],0);
+    exit;
+  end;
+
   if RadioButton3.Checked = true then Search:='min' else Search:='max';
 
   Result := 0; { Инициализация переменной ответа }
@@ -455,6 +504,10 @@ begin
     xMax[2]:= StrToFloat(Edit4.Text);
     xMin[1]:= StrToFloat(Edit1.Text);
     xMin[2]:= StrToFloat(Edit3.Text);
+    if (xMin[1] > xMax[1]) or (xMin[2] > xMax[2]) then begin
+      MessageDlg('Интервал введен некорректно',mtWarning,[mbOK],0);
+      exit;
+    end;
     Pict(Chart1);
   end
   else
@@ -463,16 +516,20 @@ begin
     Chart2.Visible:=true;
     xMin[1]:= StrToFloat(Edit1.Text);
     xMax[1]:= StrToFloat(Edit2.Text);
+    if (xMin[1] > xMax[1]) then begin
+      MessageDlg('Интервал введен некорректно',mtWarning,[mbOK],0);
+        exit;
+    end;
     plotting(Chart2);
   end;
 
-
+  Button1.Enabled:=false;
+  Button1.Update;
   NMutation := 0;  { Инициализация счетчика мутация }
   NCross := 0; { Инициализация счетчика скрещиваний }
   InitPop; { Создание начальной популяции }
   Statistics(Max, Avg, Min, OldPop);
   if dimDynamic=1 then plottingDots(PopSize,OldPop);   {вывод на график каждого индивидуума популяции}
-
   if Search='min' then begin
     BestResult:= Min
   end else begin
@@ -502,10 +559,21 @@ begin
   begin
     Label1.Caption:='Максимум: '+FloatToStrF(BestResult,ffFixed,10,4);
   end;
+  Application.ProcessMessages;
   Button1.Enabled:=true;
 end;
 
 //==============================================================================
+procedure TForm1.Edit1KeyPress(Sender: TObject; var Key: Char);
+begin
+  if not (Key in ['0'..'9', #8,'-'])then Key:=#0;
+end;
+
+procedure TForm1.Edit5KeyPress(Sender: TObject; var Key: Char);
+begin
+  if not (Key in ['0'..'9', #8])then Key:=#0;
+end;
+
 procedure TForm1.FormActivate(Sender: TObject);
 var
   i,m : integer;
