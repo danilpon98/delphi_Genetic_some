@@ -14,7 +14,7 @@ const
   dim = 2;   { Размерность пространства поиска }
   PMutation = 0.01; { Вероятность мутации }
   PCross = 0.9;   { Вероятность скрещивания }
-  NN = 30; {число прогонов}
+  NN = 4; {число прогонов}
 
 type
   Allele = boolean;  {Алель - позиция в битовой строке }
@@ -101,6 +101,8 @@ type
     Edit5: TEdit;
     Label11: TLabel;
     Edit6: TEdit;
+    Chart2: TChart;
+    Series51: TLineSeries;
     procedure Button1Click(Sender: TObject);
     procedure FormActivate(Sender: TObject);
 
@@ -334,7 +336,7 @@ end;
 
 
 //==============================================================================
-procedure Pict(Chart1:TChart);
+procedure Pict(Chart1:TChart); // построение графика для двух переменных
   var
     i,j,M : integer;
 begin
@@ -358,12 +360,31 @@ begin
 end;
 
 //==============================================================================
+
+
+procedure plotting(Chart1:TChart); {построение графика функции для одной переменной}
+  var i:fenotype;
+    h:Real;
+  begin
+    Chart1.Series[0].Clear;
+    h:= (xmax[1] - xmin[1])/100;
+    i[1]:=xmin[1];
+    while i[1]<=xmax[1] do begin
+       Chart1.Series[0].AddXY(i[1],objfunc(i));
+       i[1]:=i[1]+h;
+    end;
+    Chart1.Update;
+  end;
+//==============================================================================
+
+
 procedure TForm1.Button1Click(Sender: TObject);
 var i,j:integer;
     RezultMin, RezultMax :Double;
 
 begin
   dimDynamic:=1;
+  Application.ProcessMessages;
   Randomize; { Инициализация генератора случайных чисел }
   NGen := StrToInt(Edit5.Text); { Количество поколений }
   PopSize := StrToInt(Edit6.Text); {Размер популяции }
@@ -371,29 +392,34 @@ begin
   
   if dimDynamic = 2 then
   begin
+    Chart1.Visible:=true;
+    Chart2.Visible:=false;
     xMax[1]:= StrToFloat(Edit2.Text);
     xMax[2]:= StrToFloat(Edit4.Text);
     xMin[1]:= StrToFloat(Edit1.Text);
     xMin[2]:= StrToFloat(Edit3.Text);
-    Pict(Chart1);  
+    Pict(Chart1);
   end
   else
   begin
+    Chart1.Visible:=false;
+    Chart2.Visible:=true;
     xMin[1]:= StrToFloat(Edit1.Text);
     xMax[1]:= StrToFloat(Edit2.Text);
+    plotting(Chart2);
   end;
-  
 
-  NMutation := 0;  { Инициализация счетчика мутация }
-  NCross := 0; { Инициализация счетчика скрещиваний }
-  InitPop; { Создание начальной популяции }
-  Statistics(Max, Avg, Min, OldPop);
-  BestMin := Min;
-  BestMax := Max;
-  Gen := 1;   { Установка счетчика поколений в 0 }
-
+  RezultMin:=0;
+  RezultMax:=0;
   for b := 1 to NN do { Прогоняется N раз для повышения достоверности }
   begin
+      NMutation := 0;  { Инициализация счетчика мутация }
+      NCross := 0; { Инициализация счетчика скрещиваний }
+      InitPop; { Создание начальной популяции }
+      Statistics(Max, Avg, Min, OldPop);
+      BestMin := Min;
+      BestMax := Max;
+      Gen := 1;   { Установка счетчика поколений в 0 }
       repeat { Главный итерационный цикл }
         Generation;
         Statistics(Max, Avg, Min, NewPop);

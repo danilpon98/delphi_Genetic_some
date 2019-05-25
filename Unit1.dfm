@@ -615,4 +615,27 @@ object Form1: TForm1
       Text = '190'
     end
   end
+  object Chart2: TChart
+    Left = 319
+    Top = 17
+    Width = 482
+    Height = 377
+    Legend.Visible = False
+    Title.Text.Strings = (
+      'TChart')
+    View3D = False
+    TabOrder = 3
+    Visible = False
+    DefaultCanvas = 'TGDIPlusCanvas'
+    ColorPaletteIndex = 13
+    object Series51: TLineSeries
+      Brush.BackColor = clDefault
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+  end
 end
