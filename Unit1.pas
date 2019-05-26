@@ -120,7 +120,6 @@ type
     procedure Image2Click(Sender: TObject);
     procedure Edit1KeyPress(Sender: TObject; var Key: Char);
     procedure Edit5KeyPress(Sender: TObject; var Key: Char);
-
   private
     { Private declarations }
   public
@@ -150,7 +149,6 @@ implementation
 
 function ObjFunc( x: Fenotype): real;   { ‘ункци€ }
 begin
-
   if dimDynamic = 1 then
     ObjFunc := 5-24*x[1]+17*x[1]*x[1]-(11/3)*x[1]*x[1]*x[1]+(1/4)*x[1]*x[1]*x[1]*x[1]
   else
@@ -260,8 +258,10 @@ var
       Shuffle(OldPop);
       ipick := 1;
     end;
+    {берутс€ два соседних элемента текущей попул€ции }
     i := ipick;
     j := ipick + 1;
+    {и лучший из них помещаетс€ в промежуточную попул€цию}
     if Search='min' then
     begin
       if OldPop[j].Fitness < OldPop[i].Fitness then m := j else m := i;
@@ -286,6 +286,9 @@ end;
 {мутаци€ одного бита в строке (аллел€) с веро€тностью pmutation}
 { alleleval Ц ген дл€ мутации}
 function Mutation(alleleval: Allele; var NMutation: integer): Allele;
+{alleleval Ц ген дл€ мутации;
+PMutation Ц веро€тность мутации;
+NMutation Ц счетчик мутаций;}
 begin
   if Flip(PMutation) then { ћутаци€ с веро€тностью PMutation }
   begin

@@ -2,7 +2,9 @@ object Form1: TForm1
   Left = 0
   Top = 0
   BorderStyle = bsSingle
-  Caption = #1043#1077#1085#1077#1090#1080#1095#1077#1089#1082#1080#1081' '#1072#1083#1075#1086#1088#1080#1090#1084' '
+  Caption = 
+    #1043#1077#1085#1077#1090#1080#1095#1077#1089#1082#1080#1081' '#1072#1083#1075#1086#1088#1080#1090#1084'. '#1055#1086#1080#1089#1082' '#1101#1082#1089#1090#1088#1077#1084#1091#1084#1072' '#1092#1091#1085#1082#1094#1080#1080'. '#1057#1090'. '#1075#1088'. '#1055#1048#1073'-182' +
+    ' '#1055#1086#1085#1086#1084#1072#1088#1077#1085#1082#1086' '#1044#1072#1085#1080#1083
   ClientHeight = 481
   ClientWidth = 801
   Color = clBtnFace
@@ -1076,11 +1078,12 @@ object Form1: TForm1
     LeftWall.Color = clWhite
     Legend.Visible = False
     Title.Angle = 2
+    Title.Font.Color = clBlack
     Title.Font.Height = -21
-    Title.Font.Style = [fsBold, fsItalic]
+    Title.Font.Style = [fsBold]
     Title.Margins.Top = 10
     Title.Text.Strings = (
-      'TChart')
+      #1043#1088#1072#1092#1080#1082' '#1092#1091#1085#1082#1094#1080#1080)
     Title.VertMargin = 0
     ClipPoints = False
     View3DOptions.FontZoom = 70
@@ -1732,8 +1735,10 @@ object Form1: TForm1
     Width = 485
     Height = 369
     Legend.Visible = False
+    Title.Font.Color = clBlack
+    Title.Font.Height = -19
     Title.Text.Strings = (
-      'TChart')
+      #1043#1088#1072#1092#1080#1082' '#1092#1091#1085#1082#1094#1080#1080)
     View3D = False
     TabOrder = 3
     Visible = False
